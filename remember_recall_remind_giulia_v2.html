@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Remember, Recall, Remind & Recollect — Giulia</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap');
+
+  :root {
+    --coral: #D85A30;
+    --coral-light: #f0ebe8;
+    --navy: #1a2740;
+    --navy-mid: #2d3f5c;
+    --gold: #C9973A;
+    --green: #2e7d5e;
+    --green-light: #e8f5ef;
+    --red-light: #fdecea;
+    --text: #1e1e1e;
+    --muted: #6b7280;
+    --border: #e2e8f0;
+    --bg: #f8f7f5;
+    --white: #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 0 0 60px;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--navy);
+    color: white;
+    padding: 36px 24px 28px;
+    text-align: center;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    margin-bottom: 6px;
+  }
+  header .meta {
+    font-size: .85rem;
+    color: #a0aec0;
+    letter-spacing: .04em;
+  }
+  header .meta span { color: var(--coral); font-weight: 600; }
+
+  /* MAIN */
+  main { max-width: 780px; margin: 0 auto; padding: 0 16px; }
+
+  /* SECTION TITLE */
+  .section-title {
+    margin: 40px 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title .badge {
+    background: var(--coral);
+    color: white;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    padding: 3px 9px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .section-title h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--navy);
+  }
+  .section-title .divider { flex: 1; height: 1px; background: var(--border); }
+
+  /* WORD CARDS */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .word-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-top: 4px solid var(--coral);
+    border-radius: 10px;
+    padding: 16px 14px;
+  }
+  .word-card .verb {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    color: var(--coral);
+    margin-bottom: 4px;
+  }
+  .word-card .rule {
+    font-size: .78rem;
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-style: italic;
+    line-height: 1.4;
+  }
+  .word-card .example {
+    font-size: .82rem;
+    color: var(--navy);
+    background: var(--coral-light);
+    border-left: 3px solid var(--coral);
+    padding: 6px 8px;
+    border-radius: 0 6px 6px 0;
+    line-height: 1.4;
+  }
+  .pt-note {
+    font-size: .8rem;
+    background: #fffbf0;
+    border: 1px solid #e8d88a;
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: #7a6512;
+    margin-bottom: 6px;
+  }
+
+  /* EXERCISE BLOCKS */
+  .exercise-block {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .q-num {
+    display: inline-block;
+    background: var(--navy);
+    color: white;
+    font-size: .72rem;
+    font-weight: 700;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 22px;
+    margin-right: 8px;
+    flex-shrink: 0;
+  }
+  .q-row { display: flex; align-items: flex-start; margin-bottom: 10px; }
+  .q-text { font-size: .95rem; }
+
+  /* MC options */
+  .options { display: flex; flex-direction: column; gap: 7px; margin-top: 10px; padding-left: 30px; }
+  .opt-btn {
+    background: #f4f5f7;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 14px;
+    font-size: .88rem;
+    cursor: pointer;
+    text-align: left;
+    transition: background .15s, border-color .15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .opt-btn:hover { background: var(--coral-light); border-color: var(--coral); }
+  .opt-btn.correct { background: var(--green-light); border-color: var(--green); color: var(--green); font-weight: 600; }
+  .opt-btn.wrong { background: var(--red-light); border-color: #e57373; color: #b91c1c; }
+  .opt-btn:disabled { cursor: default; }
+  .fb { font-size: .82rem; padding: 6px 10px; border-radius: 6px; margin-top: 6px; margin-left: 30px; display: none; }
+  .fb.show { display: block; }
+  .fb.ok { background: var(--green-light); color: var(--green); }
+  .fb.no { background: var(--red-light); color: #b91c1c; }
+
+  /* GAP FILL */
+  .gap-sentence { font-size: .95rem; line-height: 1.8; }
+  input.gap {
+    border: none;
+    border-bottom: 2px solid var(--coral);
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .95rem;
+    color: var(--navy);
+    width: 130px;
+    outline: none;
+    padding: 1px 4px;
+    transition: border-color .2s;
+  }
+  input.gap:focus { border-color: var(--navy); }
+  input.gap.ok { border-color: var(--green); color: var(--green); }
+  input.gap.no { border-color: #e57373; color: #b91c1c; }
+  .check-btn {
+    margin-top: 10px;
+    background: var(--navy);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 16px;
+    font-size: .83rem;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+  }
+  .check-btn:hover { background: var(--coral); }
+  .word-bank {
+    background: #f0f4fa;
+    border: 1px solid #d1dae8;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    font-size: .83rem;
+    color: var(--navy-mid);
+  }
+  .word-bank strong { color: var(--navy); margin-right: 6px; }
+
+  /* PRODUCTION */
+  .prod-prompt {
+    font-size: .9rem;
+    color: var(--navy-mid);
+    font-style: italic;
+    margin-bottom: 6px;
+  }
+  textarea {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .9rem;
+    resize: vertical;
+    min-height: 60px;
+    color: var(--text);
+    transition: border-color .2s;
+  }
+  textarea:focus { outline: none; border-color: var(--coral); }
+
+  .ans-btn {
+    background: transparent;
+    border: 1.5px solid var(--coral);
+    color: var(--coral);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: .8rem;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    margin-top: 8px;
+  }
+  .ans-btn:hover { background: var(--coral); color: white; }
+  .answers {
+    background: var(--coral-light);
+    border-left: 3px solid var(--coral);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    margin-top: 8px;
+    font-size: .85rem;
+    display: none;
+  }
+  .answers.open { display: block; }
+  .answers strong { color: var(--coral); }
+
+  /* SPEAKING */
+  .sp-card {
+    background: var(--navy);
+    color: white;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+  }
+  .sp-card .sp-label {
+    font-size: .7rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #a0aec0;
+    margin-bottom: 4px;
+  }
+  .sp-card .sp-prompt {
+    font-size: .95rem;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+  .sp-card .sp-hint {
+    font-size: .78rem;
+    color: #94a3b8;
+    font-style: italic;
+    margin-bottom: 12px;
+  }
+  .sp-timer-row { display: flex; align-items: center; gap: 12px; }
+  .sp-start {
+    background: var(--coral);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-size: .85rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .sp-start:hover { background: #bf4f28; }
+  .sp-clock {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: #e2e8f0;
+    min-width: 48px;
+  }
+  .sp-clock.urgent { color: #fc8181; }
+  .sp-clock.done { color: #68d391; }
+
+  /* SCORE */
+  .score-bar {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-top: 32px;
+    text-align: center;
+  }
+  .score-bar h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    color: var(--navy);
+    margin-bottom: 12px;
+  }
+  .score-display {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    color: var(--coral);
+    margin-bottom: 4px;
+  }
+  .score-label { font-size: .83rem; color: var(--muted); }
+  .calc-btn {
+    background: var(--coral);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 22px;
+    font-size: .88rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    margin-top: 10px;
+  }
+  .calc-btn:hover { background: #bf4f28; }
+
+  /* SAVED INDICATOR */
+  #save-indicator {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    background: var(--navy);
+    color: white;
+    font-size: .78rem;
+    padding: 6px 12px;
+    border-radius: 20px;
+    opacity: 0;
+    transition: opacity .4s;
+    pointer-events: none;
+  }
+  #save-indicator.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Remember, Recall, Remind &amp; Recollect</h1>
+  <p class="meta">Giulia · <span>B1/B2</span> · Fisioterapia &amp; Parkinson's Disease</p>
+</header>
+
+<main>
+
+<!-- SECTION 0: WORD CARDS -->
+<div class="section-title">
+  <span class="badge">Referência</span>
+  <h2>Os 4 verbos — como usar cada um</h2>
+  <div class="divider"></div>
+</div>
+
+<div class="pt-note">
+  💡 Todos esses verbos têm a ver com <strong>memória</strong>, mas cada um tem um uso específico em inglês. Leia as diferenças antes de começar.
+</div>
+
+<div class="cards-grid">
+  <div class="word-card">
+    <div class="verb">remember</div>
+    <div class="rule">Você tem a informação na sua memória agora.</div>
+    <div class="example">"I remember that the patient said he falls at night."</div>
+  </div>
+  <div class="word-card">
+    <div class="verb">recall</div>
+    <div class="rule">Você busca ativamente uma informação específica do passado. Mais formal.</div>
+    <div class="example">"Can you recall when the tremors first started?"</div>
+  </div>
+  <div class="word-card">
+    <div class="verb">remind</div>
+    <div class="rule">Você faz alguém lembrar de algo. Sempre envolve duas pessoas!</div>
+    <div class="example">"Please remind me to check his medication before the session."</div>
+  </div>
+  <div class="word-card">
+    <div class="verb">recollect</div>
+    <div class="rule">Você lembra de algo do passado com esforço ou carinho. Mais literário/formal.</div>
+    <div class="example">"I recollect that his gait was much better in the first month."</div>
+  </div>
+</div>
+
+<!-- SECTION 1: MULTIPLE CHOICE -->
+<div class="section-title">
+  <span class="badge">Parte 1</span>
+  <h2>Múltipla escolha — contexto clínico</h2>
+  <div class="divider"></div>
+</div>
+
+<!-- Q1 -->
+<div class="exercise-block">
+  <div class="q-row"><span class="q-num">1</span><span class="q-text">Your supervisor asks about a Parkinson's patient who visited last week. You want to say you have the information in your memory. You say:</span></div>
+  <div class="options" id="mc1">
+    <button class="opt-btn" onclick="mc('mc1',this,false,'Cuidado! <em>remind</em> significa fazer outra pessoa lembrar.')">a) "I remind his gait problems from last Tuesday."</button>
+    <button class="opt-btn" onclick="mc('mc1',this,true,'✓ Correto! <em>remember</em> = você tem a informação na sua memória.')">b) "I remember his gait problems from last Tuesday."</button>
+    <button class="opt-btn" onclick="mc('mc1',this,false,'<em>recollect</em> também funcionaria, mas é mais formal e literário.')">c) "I recollect his gait problems from last Tuesday."</button>
+  </div>
+  <div class="fb" id="mc1-fb"></div>
+</div>
+
+<!-- Q2 -->
+<div class="exercise-block">
+  <div class="q-row"><span class="q-num">2</span><span class="q-text">During a clinical assessment, you ask a Parkinson's patient to think back carefully and tell you exactly when the rigidity started. You say:</span></div>
+  <div class="options" id="mc2">
+    <button class="opt-btn" onclick="mc('mc2',this,false,'<em>remember</em> é menos formal para pedir uma informação específica do passado.')">a) "Can you remember when the rigidity started?"</button>
+    <button class="opt-btn" onclick="mc('mc2',this,true,'✓ Correto! <em>recall</em> é ideal para pedir informações específicas do passado em contexto clínico.')">b) "Can you recall when the rigidity started?"</button>
+    <button class="opt-btn" onclick="mc('mc2',this,false,'<em>remind</em> não funciona aqui — você não está pedindo a ele que te lembre de algo.')">c) "Can you remind when the rigidity started?"</button>
+  </div>
+  <div class="fb" id="mc2-fb"></div>
+</div>
+
+<!-- Q3 -->
+<div class="exercise-block">
+  <div class="q-row"><span class="q-num">3</span><span class="q-text">You need your colleague Ana to tell you about the patient's medication schedule before the afternoon session. You say:</span></div>
+  <div class="options" id="mc3">
+    <button class="opt-btn" onclick="mc('mc3',this,false,'<em>remember</em> aqui seria "you remember me" — não é inglês correto nesse sentido.')">a) "Ana, can you remember me about the medication schedule?"</button>
+    <button class="opt-btn" onclick="mc('mc3',this,false,'<em>recall</em> é intransitivo nesse sentido — você não "recalls" alguém.')">b) "Ana, can you recall me about the medication schedule?"</button>
+    <button class="opt-btn" onclick="mc('mc3',this,true,'✓ Correto! <em>remind someone about something</em> = pedir que alguém te lembre de algo.')">c) "Ana, can you remind me about the medication schedule?"</button>
+  </div>
+  <div class="fb" id="mc3-fb"></div>
+</div>
+
+<!-- Q4 -->
+<div class="exercise-block">
+  <div class="q-row"><span class="q-num">4</span><span class="q-text">In a case study presentation, you want to say you clearly have in your memory the improvement you saw in a Parkinson's patient after three months of treatment. You say:</span></div>
+  <div class="options" id="mc4">
+    <button class="opt-btn" onclick="mc('mc4',this,false,'<em>remind</em> não funciona — você não está pedindo que alguém te lembre de algo.')">a) "I remind the improvement in his balance after three months."</button>
+    <button class="opt-btn" onclick="mc('mc4',this,true,'✓ Correto! <em>remember</em> = você tem a informação na sua memória. Funciona bem aqui.')">b) "I remember the improvement in his balance after three months."</button>
+    <button class="opt-btn" onclick="mc('mc4',this,false,'<em>recall</em> também funcionaria aqui, mas <em>remember</em> é mais natural para afirmações simples.')">c) "I recall the improvement in his balance after three months."</button>
+  </div>
+  <div class="fb" id="mc4-fb"></div>
+</div>
+
+<!-- Q5 -->
+<div class="exercise-block">
+  <div class="q-row"><span class="q-num">5</span><span class="q-text">You want your supervisor to tell you about the patient's therapy goals before tomorrow's session. You say:</span></div>
+  <div class="options" id="mc5">
+    <button class="opt-btn" onclick="mc('mc5',this,false,'Com <em>remind</em>, você precisa de "remind me of" ou "remind me about" — não "remind you".')">a) "Could you remind you about the therapy goals?"</button>
+    <button class="opt-btn" onclick="mc('mc5',this,true,'✓ Correto! <em>remind me of</em> = pede que outra pessoa te lembre de algo.')">b) "Could you remind me of the therapy goals for tomorrow?"</button>
+    <button class="opt-btn" onclick="mc('mc5',this,false,'<em>recall me</em> não é uma estrutura válida em inglês.')">c) "Could you recall me the therapy goals for tomorrow?"</button>
+  </div>
+  <div class="fb" id="mc5-fb"></div>
+</div>
+
+<!-- Q6 -->
+<div class="exercise-block">
+  <div class="q-row"><span class="q-num">6</span><span class="q-text">In a formal written report about a patient with Parkinson's, you want to say you can bring back to memory their initial condition with effort. Which is most appropriate for a formal clinical report?</span></div>
+  <div class="options" id="mc6">
+    <button class="opt-btn" onclick="mc('mc6',this,false,'<em>remember</em> é correto, mas mais informal — menos ideal para um relatório clínico formal.')">a) "I remember the patient's initial condition clearly."</button>
+    <button class="opt-btn" onclick="mc('mc6',this,true,'✓ Correto! <em>recall</em> é o verbo mais formal e adequado para relatórios clínicos.')">b) "I recall the patient's initial condition clearly."</button>
+    <button class="opt-btn" onclick="mc('mc6',this,false,'<em>remind</em> não pode ser usado para falar sobre a sua própria memória.')">c) "I remind the patient's initial condition clearly."</button>
+  </div>
+  <div class="fb" id="mc6-fb"></div>
+</div>
+
+<!-- Q7 -->
+<div class="exercise-block">
+  <div class="q-row"><span class="q-num">7</span><span class="q-text">The patient's daughter says her father always forgets to do his home exercises. You want to suggest that she helps him. You say:</span></div>
+  <div class="options" id="mc7">
+    <button class="opt-btn" onclick="mc('mc7',this,false,'<em>recall him</em> não é uma estrutura válida em inglês.')">a) "You could recall him to do his exercises every morning."</button>
+    <button class="opt-btn" onclick="mc('mc7',this,false,'<em>remember him to do</em> não é inglês correto nesse sentido.')">b) "You could remember him to do his exercises every morning."</button>
+    <button class="opt-btn" onclick="mc('mc7',this,true,'✓ Correto! <em>remind someone to do something</em> = dizer a alguém para não esquecer de fazer algo.')">c) "You could remind him to do his exercises every morning."</button>
+  </div>
+  <div class="fb" id="mc7-fb"></div>
+</div>
+
+<!-- Q8 -->
+<div class="exercise-block">
+  <div class="q-row"><span class="q-num">8</span><span class="q-text">During a group study session at university, your classmate asks if you can bring back to memory the details of the Parkinson's case you studied together last semester. You say:</span></div>
+  <div class="options" id="mc8">
+    <button class="opt-btn" onclick="mc('mc8',this,true,'✓ Correto! Tanto <em>remember</em> quanto <em>recall</em> funcionam aqui. <em>Remember</em> é mais informal e natural na conversa.')">a) "Yes, I remember it — the patient had tremors on the left side."</button>
+    <button class="opt-btn" onclick="mc('mc8',this,false,'<em>remind</em> não funciona aqui — você não está pedindo que alguém te lembre de algo.')">b) "Yes, I remind it — the patient had tremors on the left side."</button>
+    <button class="opt-btn" onclick="mc('mc8',this,false,'Você não pode dizer <em>recollect it</em> nesse contexto casual — seria muito formal.')">c) "Yes, I recollect it deeply — the patient had tremors on the left side."</button>
+  </div>
+  <div class="fb" id="mc8-fb"></div>
+</div>
+
+<!-- SECTION 2: GAP FILL -->
+<div class="section-title">
+  <span class="badge">Parte 2</span>
+  <h2>Complete as frases — fisioterapia &amp; Parkinson's</h2>
+  <div class="divider"></div>
+</div>
+
+<div class="word-bank">
+  <strong>Banco de palavras:</strong>
+  remember &nbsp;·&nbsp; recall &nbsp;·&nbsp; remind &nbsp;·&nbsp; recollect &nbsp;·&nbsp; reminded &nbsp;·&nbsp; recalls &nbsp;·&nbsp; remembers &nbsp;·&nbsp; reminding
+</div>
+
+<!-- GF1 -->
+<div class="exercise-block">
+  <div class="q-row"><span class="q-num">1</span>
+    <span class="q-text gap-sentence">
+      The physiotherapy supervisor asked Giulia to <input class="gap" id="g1" data-ans="recall" placeholder="verb"> the exact exercises she used with the Parkinson's patient last Friday.
+    </span>
+  </div>
+  <button class="check-btn" onclick="chk('g1')">Verificar</button>
+</div>
+
+<!-- GF2 -->
+<div class="exercise-block">
+  <div class="q-row"><span class="q-num">2</span>
+    <span class="q-text gap-sentence">
+      Please <input class="gap" id="g2" data-ans="remind" placeholder="verb"> me to read the Parkinson's assessment notes before the afternoon session.
+    </span>
+  </div>
+  <button class="check-btn" onclick="chk('g2')">Verificar</button>
+</div>
+
+<!-- GF3 -->
+<div class="exercise-block">
+  <div class="q-row"><span class="q-num">3</span>
+    <span class="q-text gap-sentence">
+      Giulia clearly <input class="gap" id="g3" data-ans="remembers" placeholder="verb"> the first time she saw a patient with advanced Parkinson's — he couldn't stand up without help.
+    </span>
+  </div>
+  <button class="check-btn" onclick="chk('g3')">Verificar</button>
+</div>
+
+<!-- GF4 -->
+<div class="exercise-block">
+  <div class="q-row"><span class="q-num">4</span>
+    <span class="q-text gap-sentence">
+      The patient's wife <input class="gap" id="g4" data-ans="reminded" placeholder="verb"> the doctor that her husband had fallen twice the previous week.
+    </span>
+  </div>
+  <button class="check-btn" onclick="chk('g4')">Verificar</button>
+</div>
+
+<!-- GF5 -->
+<div class="exercise-block">
+  <div class="q-row"><span class="q-num">5</span>
+    <span class="q-text gap-sentence">
+      In her clinical report, Giulia wrote: "I <input class="gap" id="g5" data-ans="recall" placeholder="verb"> that the patient's motor symptoms improved significantly after six weeks of targeted physiotherapy."
+    </span>
+  </div>
+  <button class="check-btn" onclick="chk('g5')">Verificar</button>
+</div>
+
+<!-- GF6 -->
+<div class="exercise-block">
+  <div class="q-row"><span class="q-num">6</span>
+    <span class="q-text gap-sentence">
+      The app on the patient's phone keeps <input class="gap" id="g6" data-ans="reminding" placeholder="verb"> him to take his Levodopa medication at the right time.
+    </span>
+  </div>
+  <button class="check-btn" onclick="chk('g6')">Verificar</button>
+</div>
+
+<!-- GF7 -->
+<div class="exercise-block">
+  <div class="q-row"><span class="q-num">7</span>
+    <span class="q-text gap-sentence">
+      Do you <input class="gap" id="g7" data-ans="remember" placeholder="verb"> the name of the scale we used to assess his balance? I think it was the Berg Balance Scale.
+    </span>
+  </div>
+  <button class="check-btn" onclick="chk('g7')">Verificar</button>
+</div>
+
+<!-- GF8 -->
+<div class="exercise-block">
+  <div class="q-row"><span class="q-num">8</span>
+    <span class="q-text gap-sentence">
+      She <input class="gap" id="g8" data-ans="recollects" placeholder="verb" data-ans2="recalls"> watching her professor demonstrate the Parkinson's gait assessment for the first time — it was in her second year of university.
+    </span>
+  </div>
+  <button class="check-btn" onclick="chkMulti('g8',['recollects','recalls','remembers'])">Verificar</button>
+</div>
+
+<!-- SECTION 3: PRODUCTION -->
+<div class="section-title">
+  <span class="badge">Parte 3</span>
+  <h2>Produção escrita — escreva você mesma</h2>
+  <div class="divider"></div>
+</div>
+
+<!-- PROD 1 -->
+<div class="exercise-block">
+  <div class="q-row"><span class="q-num">1</span><span class="q-text">Você está descrevendo um paciente com Parkinson's para o seu supervisor. Diga que você tem em sua memória que ele tem dificuldade para iniciar o movimento (freezing of gait).</span></div>
+  <p class="prod-prompt">Use: <strong>remember</strong></p>
+  <textarea id="p1" placeholder="Write your answer here..." oninput="save()"></textarea>
+  <button class="ans-btn" onclick="showAns('p1-ans')">Ver resposta sugerida</button>
+  <div class="answers" id="p1-ans">
+    <strong>Sugestão:</strong> "I remember that this patient has difficulty initiating movement — he experiences freezing of gait, especially when starting to walk."
+  </div>
+</div>
+
+<!-- PROD 2 -->
+<div class="exercise-block">
+  <div class="q-row"><span class="q-num">2</span><span class="q-text">Você está escrevendo um relatório clínico formal. Diga que você consegue trazer de volta à memória os resultados do paciente na avaliação de equilíbrio três meses atrás.</span></div>
+  <p class="prod-prompt">Use: <strong>recall</strong></p>
+  <textarea id="p2" placeholder="Write your answer here..." oninput="save()"></textarea>
+  <button class="ans-btn" onclick="showAns('p2-ans')">Ver resposta sugerida</button>
+  <div class="answers" id="p2-ans">
+    <strong>Sugestão:</strong> "I recall that the patient scored 42 out of 56 on the Berg Balance Scale during the assessment three months ago."
+  </div>
+</div>
+
+<!-- PROD 3 -->
+<div class="exercise-block">
+  <div class="q-row"><span class="q-num">3</span><span class="q-text">Você precisa que sua colega te avise sobre a sessão de Parkinson's às 14h de amanhã. Peça isso para ela.</span></div>
+  <p class="prod-prompt">Use: <strong>remind</strong></p>
+  <textarea id="p3" placeholder="Write your answer here..." oninput="save()"></textarea>
+  <button class="ans-btn" onclick="showAns('p3-ans')">Ver resposta sugerida</button>
+  <div class="answers" id="p3-ans">
+    <strong>Sugestão:</strong> "Could you remind me about the Parkinson's session tomorrow at 2pm? I don't want to forget to prepare the parallel bars."
+  </div>
+</div>
+
+<!-- PROD 4 -->
+<div class="exercise-block">
+  <div class="q-row"><span class="q-num">4</span><span class="q-text">Durante a avaliação, você pede ao paciente que pense cuidadosamente e tente lembrar se ele teve tremores antes do diagnóstico de Parkinson's.</span></div>
+  <p class="prod-prompt">Use: <strong>recall</strong></p>
+  <textarea id="p4" placeholder="Write your answer here..." oninput="save()"></textarea>
+  <button class="ans-btn" onclick="showAns('p4-ans')">Ver resposta sugerida</button>
+  <div class="answers" id="p4-ans">
+    <strong>Sugestão:</strong> "Can you recall if you noticed any tremors before you received the Parkinson's diagnosis? Even small ones, maybe in your hand or arm?"
+  </div>
+</div>
+
+<!-- PROD 5 -->
+<div class="exercise-block">
+  <div class="q-row"><span class="q-num">5</span><span class="q-text">O paciente está esquecendo de fazer os exercícios em casa. Sugira para a família que eles avisem ele todos os dias.</span></div>
+  <p class="prod-prompt">Use: <strong>remind</strong></p>
+  <textarea id="p5" placeholder="Write your answer here..." oninput="save()"></textarea>
+  <button class="ans-btn" onclick="showAns('p5-ans')">Ver resposta sugerida</button>
+  <div class="answers" id="p5-ans">
+    <strong>Sugestão:</strong> "I'd recommend that someone in the family reminds him to do his exercises every morning. You could also set an alarm to help remind him."
+  </div>
+</div>
+
+<!-- PROD 6 -->
+<div class="exercise-block">
+  <div class="q-row"><span class="q-num">6</span><span class="q-text">Em uma apresentação de caso clínico na faculdade, você conta com emoção a primeira vez que observou uma melhora real em um paciente com Parkinson's. Use um verbo mais formal/literário.</span></div>
+  <p class="prod-prompt">Use: <strong>recollect</strong></p>
+  <textarea id="p6" placeholder="Write your answer here..." oninput="save()"></textarea>
+  <button class="ans-btn" onclick="showAns('p6-ans')">Ver resposta sugerida</button>
+  <div class="answers" id="p6-ans">
+    <strong>Sugestão:</strong> "I recollect the moment when the patient walked across the room without freezing for the first time. It was during our fourth session — a truly significant moment."
+  </div>
+</div>
+
+<!-- SECTION 4: SPEAKING -->
+<div class="section-title">
+  <span class="badge">Parte 4</span>
+  <h2>Speaking — contexto clínico</h2>
+  <div class="divider"></div>
+</div>
+
+<div class="sp-card">
+  <div class="sp-label">Speaking 1 · 90 segundos</div>
+  <div class="sp-prompt">
+    Imagine you are describing a Parkinson's patient to your supervisor at the end of your clinical internship shift. Tell them: what you <strong>remember</strong> about his main symptoms (tremors, rigidity, gait), one thing you want to <strong>remind</strong> your colleague to check before the next session, and one detail you <strong>recall</strong> from his first assessment three months ago.
+  </div>
+  <div class="sp-hint">Dica: use os 3 verbos — remember, remind, recall. Pense no contexto do estágio de fisioterapia.</div>
+  <div class="sp-timer-row">
+    <button class="sp-start" onclick="startSp('sp1',90)">▶ Iniciar</button>
+    <span class="sp-clock" id="sp1">1:30</span>
+  </div>
+</div>
+
+<div class="sp-card">
+  <div class="sp-label">Speaking 2 · 2 minutos</div>
+  <div class="sp-prompt">
+    Role play: You are a physiotherapy student talking to a Parkinson's patient during their session. Ask them at least 3 questions using <strong>recall</strong> or <strong>remember</strong> to understand their history (when symptoms started, falls at home, previous treatments). Also <strong>remind</strong> them of two things they should do at home this week.
+  </div>
+  <div class="sp-hint">Dica: use linguagem clínica — "Can you recall...?", "Do you remember...?", "I'd like to remind you to..."</div>
+  <div class="sp-timer-row">
+    <button class="sp-start" onclick="startSp('sp2',120)">▶ Iniciar</button>
+    <span class="sp-clock" id="sp2">2:00</span>
+  </div>
+</div>
+
+<div class="sp-card">
+  <div class="sp-label">Speaking 3 · 90 segundos</div>
+  <div class="sp-prompt">
+    You are presenting a Parkinson's case at your university. Talk about a patient you worked with this semester: what improvements you <strong>recall</strong> from session to session, something that <strong>reminded</strong> you of a technique you learned in class, and why this case is one you will always <strong>remember</strong>.
+  </div>
+  <div class="sp-hint">Dica: conecte os verbos a momentos concretos — "In our third session, I recalled..." / "His progress reminded me of..."</div>
+  <div class="sp-timer-row">
+    <button class="sp-start" onclick="startSp('sp3',90)">▶ Iniciar</button>
+    <span class="sp-clock" id="sp3">1:30</span>
+  </div>
+</div>
+
+<!-- SCORE -->
+<div class="score-bar">
+  <h3>Pontuação — Partes 1 &amp; 2</h3>
+  <div class="score-display" id="score-display">—</div>
+  <div class="score-label" id="score-label">Clique para calcular (somente questões verificadas)</div>
+  <br>
+  <button class="calc-btn" onclick="calcScore()">Calcular pontuação</button>
+</div>
+
+</main>
+
+<div id="save-indicator">💾 Salvo</div>
+
+<script>
+const STORAGE_KEY = 'giulia_remember_v2';
+
+/* ── MC ── */
+function mc(groupId, btn, correct, feedback) {
+  const group = document.getElementById(groupId);
+  if (group.dataset.done) return;
+  group.dataset.done = '1';
+  const btns = group.querySelectorAll('.opt-btn');
+  btns.forEach(b => b.disabled = true);
+  btn.classList.add(correct ? 'correct' : 'wrong');
+  if (!correct) {
+    btns.forEach(b => {
+      if (b.onclick.toString().includes('true')) b.classList.add('correct');
+    });
+  }
+  const fb = document.getElementById(groupId + '-fb');
+  fb.innerHTML = feedback;
+  fb.classList.add('show', correct ? 'ok' : 'no');
+  save();
+}
+
+/* ── GAP single ── */
+function norm(s) { return s.trim().toLowerCase(); }
+function chk(id) {
+  const inp = document.getElementById(id);
+  const ans = inp.dataset.ans;
+  inp.classList.remove('ok','no');
+  if (norm(inp.value) === norm(ans)) { inp.classList.add('ok'); }
+  else { inp.classList.add('no'); }
+  save();
+}
+
+/* ── GAP multiple accepted ── */
+function chkMulti(id, accepted) {
+  const inp = document.getElementById(id);
+  inp.classList.remove('ok','no');
+  if (accepted.map(a => norm(a)).includes(norm(inp.value))) { inp.classList.add('ok'); }
+  else { inp.classList.add('no'); }
+  save();
+}
+
+/* ── SHOW ANSWER ── */
+function showAns(id) {
+  const div = document.getElementById(id);
+  div.classList.toggle('open');
+}
+
+/* ── SPEAKING TIMER ── */
+const timers = {};
+function fmt(s) {
+  const m = Math.floor(s / 60), sec = s % 60;
+  return m + ':' + String(sec).padStart(2,'0');
+}
+function startSp(id, total) {
+  if (timers[id]) { clearInterval(timers[id]); delete timers[id]; }
+  const el = document.getElementById(id);
+  let left = total;
+  el.textContent = fmt(left);
+  el.className = 'sp-clock';
+  timers[id] = setInterval(() => {
+    left--;
+    el.textContent = fmt(left);
+    if (left <= 10) el.className = 'sp-clock urgent';
+    if (left <= 0) {
+      clearInterval(timers[id]);
+      delete timers[id];
+      el.textContent = 'Done!';
+      el.className = 'sp-clock done';
+    }
+  }, 1000);
+}
+
+/* ── SCORE ── */
+function calcScore() {
+  let correct = 0, total = 0;
+  // MC (8 questions)
+  for (let i = 1; i <= 8; i++) {
+    const g = document.getElementById('mc' + i);
+    if (g && g.dataset.done) {
+      total++;
+      const ok = g.querySelector('.opt-btn.correct');
+      if (ok && !ok.classList.contains('wrong')) {
+        // user picked it and it was right
+        const allBtns = g.querySelectorAll('.opt-btn');
+        let userPicked = false;
+        allBtns.forEach(b => { if (b.classList.contains('correct') && !b.classList.contains('wrong') && b.disabled) userPicked = true; });
+      }
+      // simpler: check if wrong class exists among selected
+      const wrong = g.querySelector('.opt-btn.wrong');
+      if (!wrong) correct++;
+    }
+  }
+  // Gaps (8 items)
+  for (let i = 1; i <= 8; i++) {
+    const inp = document.getElementById('g' + i);
+    if (inp && (inp.classList.contains('ok') || inp.classList.contains('no'))) {
+      total++;
+      if (inp.classList.contains('ok')) correct++;
+    }
+  }
+  const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
+  document.getElementById('score-display').textContent = correct + ' / ' + total;
+  document.getElementById('score-label').textContent = pct + '% — ' + (pct >= 80 ? '🌟 Excelente!' : pct >= 60 ? '👍 Bom trabalho!' : '📚 Continue praticando!');
+}
+
+/* ── AUTOSAVE ── */
+function save() {
+  const data = {};
+  // gaps
+  for (let i = 1; i <= 8; i++) {
+    const inp = document.getElementById('g' + i);
+    if (inp) data['g' + i] = { val: inp.value, cls: inp.className };
+  }
+  // textareas
+  for (let i = 1; i <= 6; i++) {
+    const ta = document.getElementById('p' + i);
+    if (ta) data['p' + i] = ta.value;
+  }
+  // mc state
+  for (let i = 1; i <= 8; i++) {
+    const g = document.getElementById('mc' + i);
+    if (g && g.dataset.done) data['mc' + i + '_done'] = '1';
+  }
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e){}
+  const ind = document.getElementById('save-indicator');
+  ind.classList.add('show');
+  setTimeout(() => ind.classList.remove('show'), 1200);
+}
+
+function load() {
+  let data;
+  try { data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e) { data = {}; }
+  for (let i = 1; i <= 8; i++) {
+    const inp = document.getElementById('g' + i);
+    if (inp && data['g' + i]) {
+      inp.value = data['g' + i].val || '';
+      if (data['g' + i].cls) inp.className = data['g' + i].cls;
+    }
+  }
+  for (let i = 1; i <= 6; i++) {
+    const ta = document.getElementById('p' + i);
+    if (ta && data['p' + i]) ta.value = data['p' + i];
+  }
+}
+
+document.addEventListener('DOMContentLoaded', load);
+document.querySelectorAll('input.gap, textarea').forEach(el => {
+  el.addEventListener('input', save);
+});
+</script>
+</body>
+</html>
